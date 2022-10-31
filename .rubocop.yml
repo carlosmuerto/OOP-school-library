@@ -16,7 +16,7 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Max: 150
 Metrics/BlockLength:
-  IgnoredMethods: ['describe']
+#  IgnoredMethods: ['describe'] # Warning: obsolete parameter `IgnoredMethods` (for `Metrics/BlockLength`)
   Max: 30
 
 
