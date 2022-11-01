@@ -1,7 +1,6 @@
 require_relative 'nameable'
 
 class TrimmerDecorator < NameableDecorator
-
   def correct_name
     @nameable.correct_name[0..9]
   end
