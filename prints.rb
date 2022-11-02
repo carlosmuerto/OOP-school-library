@@ -1,4 +1,5 @@
 require_relative 'person'
+require_relative 'classroom'
 require_relative 'student'
 require_relative 'teacher'
 require_relative './nameable/capitalize_decorator'
