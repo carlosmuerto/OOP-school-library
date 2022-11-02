@@ -10,12 +10,12 @@ class Person < Nameable
     @name = name
     @age = age
     @parent_permission = parent_permission
-		@rentals = []
+    @rentals = []
   end
 
-	def add_rental(rental)
-		@rentals.push(rental)
-	end
+  def add_rental(rental)
+    @rentals.push(rental)
+  end
 
   def is_of_age? # rubocop:disable Naming/PredicateName
     @age >= 18
