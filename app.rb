@@ -107,28 +107,24 @@ class App
       print 'Has parrent permission? [Y/N]: '
       permission = gets.chomp.downcase == 'y'
 
-      @students.push(
-        Student.new(
-          generate_next_id,
-          person_info[:age],
-          person_info[:name],
-          parent_permission: permission
-        )
-      )
+      @students.push(Student.new(
+                       generate_next_id,
+                       person_info[:age],
+                       person_info[:name],
+                       parent_permission: permission
+                     ))
     when '2' # TEACHER
       person_info = person_info_input
 
       print 'Specialization: '
       specialization = gets.chomp
 
-      @teachers.push(
-        Teacher.new(
-          generate_next_id,
-          person_info[:age],
-          specialization,
-          person_info[:name]
-        )
-      )
+      @teachers.push(Teacher.new(
+                       generate_next_id,
+                       person_info[:age],
+                       specialization,
+                       person_info[:name]
+                     ))
 
     else
       "You gave me #{option} -- I have no idea what to do with that.\n"
