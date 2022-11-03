@@ -4,6 +4,7 @@
 require_relative 'src/book'
 require_relative 'src/student'
 require_relative 'src/teacher'
+require_relative 'src/rental'
 
 class App
   def initialize
@@ -66,6 +67,33 @@ class App
     name = gets.chomp
 
     { age: age.to_i, name: name }
+  end
+
+  def print_all_rentals
+    @rentals.each do |rent|
+      puts "#{rent.book.title} rented by #{rent.person.name} at #{rent.date}"
+    end
+  end
+
+  def add_rental
+    puts 'Select a Book from the following list by number'
+    @books.each_with_index do |book, index|
+      puts "[#{index}] #{book.title}"
+    end
+    book = @books[gets.chomp.downcase.to_i]
+
+    persons = @teachers + @students
+
+    puts 'Select a person from the following list by number'
+    persons.each_with_index do |person, index|
+      puts "[#{index}] #{person.name}"
+    end
+    person = persons[gets.chomp.downcase.to_i]
+
+    print 'Date: '
+    date = gets.chomp.downcase
+
+    @rentals.push(Rental.new(date, person, book))
   end
 
   def add_person
@@ -142,9 +170,11 @@ class App
       when '5'
         # CASE [5] Create a rental.
         puts "Create a rental.\n"
+        add_rental
       when '6'
         # CASE [6] List all rentals for a given person id.
         puts "List all rentals for a given person id.\n"
+        print_all_rentals
       when '7'
         # CASE [7] Exit
         puts "Exit\n"
