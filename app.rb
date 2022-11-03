@@ -10,7 +10,14 @@ class App
     @books = []
     @teachers = []
     @students = []
+    @rentals = []
     @next_id = 0
+  end
+
+  def generate_next_id
+    rtn_id = @next_id
+    @next_id += 1
+    rtn_id
   end
 
   def run
@@ -37,25 +44,28 @@ class App
   end
 
   def list_all_persons
-    puts " ---- Students"
+    puts ' ---- Students'
     @students.each do |student|
-      puts "  #{student.name} #{student.age} years old #{student.can_use_services? ? 'and can use services' : '' }"
+      put_str = "  [#{student.id}] #{student.name} has #{student.age}"
+      put_str += " years old #{student.can_use_services? ? 'and can use services' : ''}"
+      puts put_str
     end
-    puts " ---- Teachers"
+    puts ' ---- Teachers'
     @teachers.each do |teacher|
-      puts "  #{teacher.name} has #{teacher.age} years old specialized in: #{teacher.specialization}"
+      put_str = "  [#{teacher.id}] #{teacher.name} has #{teacher.age}"
+      put_str += " years old specialized in: #{teacher.specialization}"
+      puts put_str
     end
   end
 
   def person_info_input
-
-    print "Age: "
+    print 'Age: '
     age = gets.chomp
 
-    print "Name: "
+    print 'Name: '
     name = gets.chomp
 
-    {age: age.to_i, name: name}
+    { age: age.to_i, name: name }
   end
 
   def add_person
@@ -63,30 +73,32 @@ class App
     number = gets.chomp.downcase
 
     case number
-    when "1" # STUDENT
+    when '1' # STUDENT
       person_info = person_info_input
 
-      print "Has parrent permission? [Y/N]: "
-      permission = gets.chomp.downcase == "y"
+      print 'Has parrent permission? [Y/N]: '
+      permission = gets.chomp.downcase == 'y'
 
       @students.push(
         Student.new(
+          generate_next_id,
           person_info[:age],
           person_info[:name],
           parent_permission: permission
         )
       )
-    when "2" # TEACHER
+    when '2' # TEACHER
       person_info = person_info_input
 
-      print "Specialization: "
+      print 'Specialization: '
       specialization = gets.chomp
 
       @teachers.push(
         Teacher.new(
+          generate_next_id,
           person_info[:age],
           specialization,
-          person_info[:name],
+          person_info[:name]
         )
       )
 
@@ -121,8 +133,8 @@ class App
         list_all_persons
       when '3'
         # CASE [3] Create a person (teacher or student).
-        add_person
         puts "Create a person (teacher or student).\n"
+        add_person
       when '4'
         # CASE [4] Create a book.
         puts "Create a book.\n"
