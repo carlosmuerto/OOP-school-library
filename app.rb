@@ -1,6 +1,3 @@
-# rubocop:disable Metrics/CyclomaticComplexity
-# rubocop:disable Metrics/MethodLength
-
 require_relative 'src/book'
 require_relative 'src/student'
 require_relative 'src/teacher'
@@ -19,11 +16,6 @@ class App
     rtn_id = @next_id
     @next_id += 1
     rtn_id
-  end
-
-  def run
-    puts 'Welcome to School Library App!'
-    options_case
   end
 
   def list_all_books
@@ -69,31 +61,81 @@ class App
     { age: age.to_i, name: name }
   end
 
-  def print_all_rentals
-    @rentals.each do |rent|
-      puts "#{rent.book.title} rented by #{rent.person.name} at #{rent.date}"
+  def choose_person_input
+    persons = {}
+
+    @teachers.each do |teacher|
+      persons[teacher.id] = teacher
     end
+
+    @students.each do |student|
+      persons[student.id] = student
+    end
+
+    persons_sorted = persons.sort.to_h
+
+    puts 'Select a person from the following list by id'
+    persons_sorted.each do |id, person|
+      puts "[#{id}] #{person.name}"
+    end
+    persons[gets.chomp.downcase.to_i]
   end
 
-  def add_rental
+  def choose_book_input
     puts 'Select a Book from the following list by number'
     @books.each_with_index do |book, index|
       puts "[#{index}] #{book.title}"
     end
-    book = @books[gets.chomp.downcase.to_i]
 
-    persons = @teachers + @students
+    @books[gets.chomp.downcase.to_i]
+  end
 
-    puts 'Select a person from the following list by number'
-    persons.each_with_index do |person, index|
-      puts "[#{index}] #{person.name}"
+  def print_all_rentals_by_id
+    person = choose_person_input
+    puts "\n"
+    @rentals.each do |rent|
+      puts "#{rent.book.title} rented by #{rent.person.name} at #{rent.date}" if rent.person == person
     end
-    person = persons[gets.chomp.downcase.to_i]
+    puts "\n"
+  end
+
+  def add_rental
+    book = choose_book_input
+
+    person = choose_person_input
 
     print 'Date: '
     date = gets.chomp.downcase
 
     @rentals.push(Rental.new(date, person, book))
+  end
+
+  def add_student
+    person_info = person_info_input
+
+    print 'Has parrent permission? [Y/N]: '
+    permission = gets.chomp.downcase == 'y'
+
+    @students.push(Student.new(
+                     generate_next_id,
+                     person_info[:age],
+                     person_info[:name],
+                     parent_permission: permission
+                   ))
+  end
+
+  def add_teacher
+    person_info = person_info_input
+
+    print 'Specialization: '
+    specialization = gets.chomp
+
+    @teachers.push(Teacher.new(
+                     generate_next_id,
+                     person_info[:age],
+                     specialization,
+                     person_info[:name]
+                   ))
   end
 
   def add_person
@@ -102,94 +144,11 @@ class App
 
     case number
     when '1' # STUDENT
-      person_info = person_info_input
-
-      print 'Has parrent permission? [Y/N]: '
-      permission = gets.chomp.downcase == 'y'
-
-      @students.push(Student.new(
-                       generate_next_id,
-                       person_info[:age],
-                       person_info[:name],
-                       parent_permission: permission
-                     ))
+      add_student
     when '2' # TEACHER
-      person_info = person_info_input
-
-      print 'Specialization: '
-      specialization = gets.chomp
-
-      @teachers.push(Teacher.new(
-                       generate_next_id,
-                       person_info[:age],
-                       specialization,
-                       person_info[:name]
-                     ))
-
+      add_teacher
     else
       "You gave me #{option} -- I have no idea what to do with that.\n"
     end
-
-    # @books.push(Book.new(title, author))
-  end
-
-  private
-
-  def option_in
-    puts 'Please choose a option by enterin a number:'
-    puts "\n"
-    puts_options
-    option = gets.chomp.downcase
-    puts "\n"
-    option
-  end
-
-  def options_case
-    loop do
-      case option_in
-      when '1'
-        # CASE [1] List all books.
-        puts "List all books.\n"
-        list_all_books
-      when '2'
-        # CASE [2] List all people.
-        puts "List all people.\n"
-        list_all_persons
-      when '3'
-        # CASE [3] Create a person (teacher or student).
-        puts "Create a person (teacher or student).\n"
-        add_person
-      when '4'
-        # CASE [4] Create a book.
-        puts "Create a book.\n"
-        add_book
-      when '5'
-        # CASE [5] Create a rental.
-        puts "Create a rental.\n"
-        add_rental
-      when '6'
-        # CASE [6] List all rentals for a given person id.
-        puts "List all rentals for a given person id.\n"
-        print_all_rentals
-      when '7'
-        # CASE [7] Exit
-        puts "Exit\n"
-        break
-      else
-        "You gave me #{option} -- I have no idea what to do with that.\n"
-      end
-    end
-  end
-
-  def puts_options
-    puts '[1] - List all books.'
-    puts '[2] - List all people.'
-    puts '[3] - Create a person (teacher or student).'
-    puts '[4] - Create a book.'
-    puts '[5] - Create a rental.'
-    puts '[6] - List all rentals for a given person id.'
-    puts '[7] - Exit'
   end
 end
-# rubocop:enable Metrics/CyclomaticComplexity
-# rubocop:enable Metrics/MethodLength
